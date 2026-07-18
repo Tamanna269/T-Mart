@@ -1,10 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import products from '../data/products';
+
 import useCart from '../hooks/useCart';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function ProductDetails() {
   const { id } = useParams();
+  const[products,setProducts] = useState([]);
+
+  useEffect(() => {
+      const fetchProducts = async () => {
+        try {
+          const res = await fetch(`${API_BASE_URL}/products`);
+          if (!res.ok) throw new Error('Failed to fetch products');
+          const data = await res.json();
+  
+          // Map backend product shape to UI shape
+          const mapped = data.map((p) => ({
+            id: p.id,
+            name: p.name,
+            image: p.image || 'https://via.placeholder.com/300x200?text=No+Image',
+            quantity: p.stock,
+            description: p.description,
+            amount: p.price,
+          }));
+  
+          setProducts(mapped);
+        } catch (err) {
+          console.error('Error fetching products:', err);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchProducts();
+    }, []);
+
   const { addToCart, removeFromCart, getProductQuantity } = useCart();
   const product = products.find((item) => item.id === Number(id));
   const cartQuantity = product ? getProductQuantity(product.id) : 0;

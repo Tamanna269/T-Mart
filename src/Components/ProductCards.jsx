@@ -1,10 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import products from '../data/products';
 import useCart from '../hooks/useCart';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function ProductCards() {
   const { addToCart, removeFromCart, getProductQuantity } = useCart();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/products`);
+        if (!res.ok) throw new Error('Failed to fetch products');
+        const data = await res.json();
+
+        // Map backend product shape to UI shape
+        const mapped = data.map((p) => ({
+          id: p.id,
+          name: p.name,
+          image: p.image || 'https://via.placeholder.com/300x200?text=No+Image',
+          quantity: p.stock,
+          description: p.description,
+          amount: p.price,
+        }));
+
+        setProducts(mapped);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="bg-white px-6 py-14">
+        <div className="mx-auto max-w-6xl text-center">Loading products...</div>
+      </section>
+    );
+  }
 
   return (
     <section className="bg-white px-6 py-14">

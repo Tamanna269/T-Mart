@@ -4,6 +4,7 @@ import Header from './Components/Header'
 import Home from './Pages/Home'
 import ProductDetails from './Pages/ProductDetails'
 import Loginpage from './Pages/Loginpage'
+import Signuppage from './Pages/Signuppage'
 import ProtectRoutes from './Components/ProtectRoutes'
 import MyCart from './Pages/MyCart'
 import CheckoutPage from './Pages/CheckoutPage'
@@ -21,6 +22,7 @@ export default function App() {
      <Routes>
       <Route path="/" element={<Home/>}/>
       <Route path="/login" element={<Loginpage setIsLoggedIn={setIsLoggedIn}/>}/>
+      <Route path="/signup" element={<Signuppage/>}/>
       <Route
         path="/products/:id"
         element={

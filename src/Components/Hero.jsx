@@ -47,6 +47,9 @@ export default function Hero() {
     autoplaySpeed: 2500,
     arrows: true,
     pauseOnHover: true,
+    pauseOnFocus: true,
+    focusOnSelect: false,
+    accessibility: false,
   };
   const Slider = SlickSlider?.default||SlickSlider
 
